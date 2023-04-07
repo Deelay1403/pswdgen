@@ -1,5 +1,5 @@
 # !/usr/bin/env python
-# -*- coding: cp1250 -*-
+# -*- coding: utf-8 -*-
 # Author: Patryk Szczodrowski
 
 import urllib.request
@@ -16,12 +16,12 @@ specialChars = [i for i in "!@#$%^&*?+="]
 
 def remove_polish_characters(text):
     # Convert accented chars to their non-accented equivalent.
-    # e.g.: øÛ≥Ê -> zolc
-    normalized_text = unicodedata.normalize('NFD', text).encode('ascii', 'ignore').decode('utf-8')
-    normalized_text = normalized_text.replace('≥', 'l').replace('£', 'L').replace('π', 'a')\
-        .replace('•', 'A').replace('Í', 'e').replace(' ', 'E').replace('Û', 'o').replace('”', 'O')\
-        .replace('Ò', 'n').replace('—', 'N').replace('Ê', 'c').replace('∆', 'C').replace('ú', 's')\
-        .replace('å', 'S').replace('ø', 'z').replace('Ø', 'Z').replace('ü', 'z').replace('è', 'Z')
+    # e.g.: ≈º√≥≈Çƒá -> zolc
+    normalized_text = unicodedata.normalize('NFKD', text).encode('iso-8859-2', 'ignore').decode('iso-8859-2')
+    normalized_text = normalized_text.replace('≈Ç', 'l').replace('≈Å', 'L').replace('ƒÖ', 'a')\
+        .replace('ƒÑ', 'A').replace('ƒô', 'e').replace('ƒò', 'E').replace('√≥', 'o').replace('√ì', 'O')\
+        .replace('≈Ñ', 'n').replace('≈É', 'N').replace('ƒá', 'c').replace('ƒÜ', 'C').replace('≈õ', 's')\
+        .replace('≈ö', 'S').replace('≈º', 'z').replace('≈ª', 'Z').replace('≈∫', 'z').replace('≈π', 'Z')
     return normalized_text
 
 def __readFile(linesFile):
@@ -42,7 +42,7 @@ def getLines(linesFile = F"{tempfile.gettempdir()}/pswdgen_lines.txt"):
 
 def getWords(count = 3, deacct = True):
     lines = getLines()
-    words = [random.choice(lines).decode('cp1250').strip().split('/')[0].capitalize() for _ in range(count)]
+    words = [random.choice(lines).decode("iso-8859-2").strip().split('/')[0].capitalize() for _ in range(count)]
     password = ''.join([str(elem) for elem in words])
     return(remove_polish_characters(password) if deacct else password)
 
@@ -74,11 +74,12 @@ def saveToFile(file, list):
             f.write(F"{index}: {el}\n")
 if __name__ == "__main__":
     argv = sys.argv[1:]
+    print(remove_polish_characters("Lech Wa≈Çƒôsa"))
     file = None
     try:
         opts, args = getopt.getopt(argv, "c:w:f:s:n:h",["count =","words =","file =","numbers =","specialchars ="])
     except:
-        print("Brak parametrÛw")
+        print("Brak parametr√≥w")
         exit(1)
     for opt, arg in opts:
         if opt in ['-c', '--count']:
